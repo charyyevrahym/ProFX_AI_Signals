@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080b09">
+<title>ProFX AI Signals</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root {
+  --bg:#080b09;
+  --panel:#111813;
+  --gold:#d6ad45;
+  --green:#16c784;
+  --muted:#89958d;
+  --line:#263329;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  padding:18px 14px 90px;
+  background:var(--bg);
+  color:#f4f5f2;
+  font-family:Arial,sans-serif;
+}
+header { text-align:center; padding:12px 0 20px; }
+.logo { font-size:27px; font-weight:900; color:var(--gold); }
+.logo span { color:var(--green); }
+.subtitle { color:var(--muted); font-size:11px; letter-spacing:2px; margin-top:6px; }
+.card {
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:13px;
+}
+.label { color:var(--muted); font-size:11px; letter-spacing:1px; }
+.value { font-size:20px; font-weight:bold; margin-top:8px; }
+.green { color:var(--green); }
+.gold { color:var(--gold); }
+.status {
+  border:1px solid #725b21;
+  background:#211b0d;
+  color:#f1c75b;
+  text-align:center;
+  padding:15px;
+  border-radius:12px;
+  font-weight:bold;
+  margin-bottom:14px;
+}
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.row { display:flex; justify-content:space-between; gap:10px; margin-top:13px; font-size:13px; }
+.row span:first-child { color:var(--muted); }
+button {
+  border:1px solid var(--line);
+  background:#17221a;
+  color:white;
+  padding:12px;
+  border-radius:10px;
+  font-weight:bold;
+}
+button.active { border-color:var(--green); color:var(--green); }
+.controls { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+nav {
+  position:fixed; bottom:0; left:0; right:0;
+  display:flex; justify-content:space-around;
+  background:#101611; border-top:1px solid var(--line);
+  padding:12px 4px calc(12px + env(safe-area-inset-bottom));
+}
+nav button { background:transparent; border:0; color:var(--muted); font-size:11px; }
+nav button.active { color:var(--green); }
+.small { font-size:11px; color:var(--muted); line-height:1.5; }
+.page { display:none; }
+.page.active { display:block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span>PRO</span>FX</div>
+  <div class="subtitle">AI GOLD SIGNALS</div>
+</header>
+
+<section id="home" class="page active">
+  <div class="status">NO TRADE MODE</div>
+
+  <div class="card">
+    <div class="label">MARKET</div>
+    <div class="value gold">XAU/USD</div>
+    <div class="row"><span>Broker symbol</span><b>XAUUSD.S</b></div>
+    <div class="row"><span>Data connection</span><b class="gold">NOT CONNECTED</b></div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">MARKET PRICE</div>
+      <div class="value">—</div>
+      <div class="small">Waiting for live data</div>
+    </div>
+    <div class="card">
+      <div class="label">SIGNAL STATUS</div>
+      <div class="value gold">WAIT</div>
+      <div class="small">Confirmation required</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">MULTI-TIMEFRAME ANALYSIS</div>
+    <div class="row"><span>H4</span><b>WAITING</b></div>
+    <div class="row"><span>H1</span><b>WAITING</b></div>
+    <div class="row"><span>M15</span><b>WAITING</b></div>
+    <div class="row"><span>M5</span><b>WAITING</b></div>
+  </div>
+
+  <div class="card">
+    <div class="label">LATEST SIGNAL</div>
+    <div class="value gold">NO CONFIRMED SIGNAL</div>
+    <p class="small">The system will show Entry, Stop Loss and Take Profit only after valid confirmation.</p>
+  </div>
+</section>
+
+<section id="signals" class="page">
+  <div class="card">
+    <div class="label">SIGNAL CENTER</div>
+    <div class="value gold">WAIT FOR CONFIRMATION</div>
+    <p class="small">No live signal is available yet. Do not use demonstration values for trading.</p>
+  </div>
+  <div class="card">
+    <div class="label">ZONE ALERTS</div>
+    <div class="row"><span>Demand zone</span><b>WAITING</b></div>
+    <div class="row"><span>Supply zone</span><b>WAITING</b></div>
+  </div>
+</section>
+
+<section id="analytics" class="page">
+  <div class="card">
+    <div class="label">PERFORMANCE STATISTICS</div>
+    <div class="value">No recorded results</div>
+    <p class="small">Statistics will appear after verified signals and recorded outcomes.</p>
+  </div>
+</section>
+
+<section id="settings" class="page">
+  <div class="card">
+    <div class="label">TRADING MODE</div>
+    <div class="value gold" id="mode">NO TRADE</div>
+    <p class="small">The dashboard control is not connected to the signal server yet.</p>
+  </div>
+  <div class="controls">
+    <button class="active" onclick="chooseMode('NO TRADE')">NO TRADE</button>
+    <button onclick="chooseMode('SIGNALS')">SIGNALS</button>
+  </div>
+  <p class="small">SIGNALS düwmesi häzir diňe interfeýsiň nusgasy. Ol hakyky signallary açmaýar.</p>
+</section>
+
+<nav>
+  <button class="active" onclick="showPage('home',this)">⌂<br>Home</button>
+  <button onclick="showPage('signals',this)">↗<br>Signals</button>
+  <button onclick="showPage('analytics',this)">▥<br>Analytics</button>
+  <button onclick="showPage('settings',this)">⚙<br>Settings</button>
+</nav>
+
+<script>
+const tg = window.Telegram && window.Telegram.WebApp;
+if (tg) {
+  tg.ready();
+  tg.expand();
+}
+function showPage(id,button) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  button.classList.add('active');
+}
+function chooseMode(mode) {
+  document.getElementById('mode').textContent = mode;
+  document.querySelectorAll('.controls button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
